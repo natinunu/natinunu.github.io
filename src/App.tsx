@@ -1,9 +1,14 @@
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { LINKEDIN_URL } from "./constants";
 import { ScrollToTop } from "./ScrollToTop";
+import { LanguageButton } from "./components/LanguageButton";
+import { useLanguage } from "./i18n/LanguageProvider";
+import { STRINGS } from "./i18n/strings";
 
 function SiteHeader() {
   const { pathname } = useLocation();
+  const { locale } = useLanguage();
+  const t = STRINGS[locale];
   const workSectionActive = pathname === "/" || pathname.startsWith("/work/");
 
   const workNavClass = ({ isActive }: { isActive: boolean }) =>
@@ -25,30 +30,35 @@ function SiteHeader() {
             decoding="async"
           />
         </Link>
-        <nav className="nav nav--header" aria-label="Primary">
-          <NavLink to="/" className={workNavClass} end>
-            Work
-          </NavLink>
-          <NavLink to="/about" className={aboutNavClass}>
-            About
-          </NavLink>
-        </nav>
+        <div className="site-header-right">
+          <nav className="nav nav--header" aria-label="Primary">
+            <NavLink to="/" className={workNavClass} end>
+              {t.navWork}
+            </NavLink>
+            <NavLink to="/about" className={aboutNavClass}>
+              {t.navAbout}
+            </NavLink>
+          </nav>
+          <LanguageButton placement="header" />
+        </div>
       </div>
     </header>
   );
 }
 
 function SiteFooter() {
+  const { locale } = useLanguage();
+  const t = STRINGS[locale];
   return (
     <footer className="site-footer">
       <div className="footer-rule" role="presentation" />
       <a className="footer-linkedin" href={LINKEDIN_URL} rel="noopener noreferrer" target="_blank">
-        LinkedIn
+        {t.footerLinkedIn}
       </a>
       <p className="footer-email">
         <a href="mailto:natalymedina.nu@gmail.com">natalymedina.nu@gmail.com</a>
       </p>
-      <p className="footer-copy">© 2026</p>
+      <p className="footer-copy">{t.footerCopyright}</p>
     </footer>
   );
 }

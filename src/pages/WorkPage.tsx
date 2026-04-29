@@ -1,54 +1,73 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { LanguageButton } from "../components/LanguageButton";
-import { PROJECTS } from "../data/projects";
+import { useLanguage } from "../i18n/LanguageProvider";
+import { STRINGS } from "../i18n/strings";
+import { projectDescription, projectName } from "../i18n/projectLocale";
+import { WORK_PAGE_PROJECTS } from "../data/projects";
 
 export default function WorkPage() {
+  const { locale } = useLanguage();
+  const t = STRINGS[locale];
+
   useEffect(() => {
-    document.title = "Work | Natwork — Nati Medina";
-  }, []);
+    document.title = t.workDocTitle;
+  }, [t.workDocTitle]);
 
   return (
     <>
       <section className="hero" aria-labelledby="hero-heading">
         <h1 id="hero-heading" className="visually-hidden">
-          Introduction
+          {t.heroIntroVisuallyHidden}
         </h1>
         <p className="hero-text">
-          I am Nati, a product &amp; graphic designer{" "}
-          <span className="hero-line">based in Chile</span>, working on interface design &amp; user
-          experience.
+          {t.heroTextLead} <span className="hero-line">{t.heroLine}</span>
+          {t.heroTextTail}
         </p>
-        <p className="hero-hint">Scroll down to see my work!</p>
-        <LanguageButton />
+        <p className="hero-hint">{t.heroHint}</p>
       </section>
 
       <section id="work" className="work" aria-labelledby="work-heading">
         <h2 id="work-heading" className="work-title">
-          Work
+          {t.workHeading}
         </h2>
-        <p className="work-dates">2019 — 2026</p>
+        <p className="work-dates">{t.workDates}</p>
 
         <ul className="project-list">
-          {PROJECTS.map((p) => (
+          {WORK_PAGE_PROJECTS.map((p) => (
             <li key={p.slug}>
               <article className="project-card">
                 <Link
-                  className={`project-media project-media--${p.mediaTone}`}
+                  className={`project-media project-media--${p.mediaTone}${
+                    p.coverSrc ? " project-media--cover-only" : ""
+                  }`}
                   to={`/work/${p.slug}`}
-                  aria-label={`${p.name} — open project`}
+                  aria-label={`${projectName(p, locale)} — ${t.openProjectAria}`}
                 >
-                  <div className="device-frame" role="presentation">
-                    <div className="device-screen">
-                      <span className="placeholder-label">Project visual</span>
+                  {p.coverSrc ? (
+                    <img
+                      className="project-cover-img"
+                      src={p.coverSrc}
+                      alt=""
+                      loading={
+                        p.coverSrc.split("?")[0].split("#")[0].toLowerCase().endsWith(".gif")
+                          ? "eager"
+                          : "lazy"
+                      }
+                      decoding="async"
+                    />
+                  ) : (
+                    <div className="device-frame" role="presentation">
+                      <div className="device-screen">
+                        <span className="placeholder-label">{t.placeholderVisual}</span>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </Link>
                 <div className="project-body">
                   <h3 className="project-name">
-                    <Link to={`/work/${p.slug}`}>{p.name}</Link>
+                    <Link to={`/work/${p.slug}`}>{projectName(p, locale)}</Link>
                   </h3>
-                  <p className="project-desc">{p.description}</p>
+                  <p className="project-desc">{projectDescription(p, locale)}</p>
                 </div>
               </article>
             </li>

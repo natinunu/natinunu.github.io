@@ -18,6 +18,11 @@ export type ProjectImageItem = {
   caption?: string;
   /** Override native lazy-load (GIFs default to eager). */
   loading?: "eager" | "lazy";
+  /**
+   * No grey card behind the image (asset already includes background).
+   * Border-radius is applied directly to the img.
+   */
+  bare?: boolean;
 };
 
 export type ProjectBodyBlock =
@@ -58,7 +63,7 @@ export const PROJECT_PAGE_BY_SLUG: Partial<Record<string, ProjectPageData>> = {
     slug: "gallery-view",
     name: "Gallery View",
     mediaTone: "grey",
-    date: "Q2 2025",
+    date: "2025 — 2026",
     role: "Product Designer",
     intro:
       "Redesigned the Uber Eats storefront to make menus faster to scan by introducing a photo-coverage–aware gallery view. The solution adapts layout per menu section, showing image-first grids where photos are strong and falling back to text where they aren’t.",
@@ -67,30 +72,50 @@ export const PROJECT_PAGE_BY_SLUG: Partial<Record<string, ProjectPageData>> = {
         type: "images",
         items: [
           {
-            src: "/work/gallery-view/gallery-comparison.png",
-            alt: "Blank Street Coffee — list view before and gallery grid view after redesign",
+            src: "/work/gallery-view/gallery-view-omparison.gif",
+            alt: "Blank Street Coffee — list view before and gallery grid view after redesign (animated)",
             objectFit: "contain",
           },
         ],
       },
-      ...problemApproachImpactLayout(
-        [
-          "Users spend <1 minute deciding what to order, but menus are large (~44 items) and text-heavy. Most users only see a handful of items before choosing, leading to:",
-          "• Low scan efficiency and excessive scrolling\n• Underutilized menu photos\n• One-size-fits-all layouts that hurt low-photo (often SMB) stores\n• Missed opportunities to surface high-value or relevant items",
-        ].join("\n\n"),
-        [
-          "Designed a dynamic, subsection-level layout system that adapts based on photo coverage and menu size:",
-          "• Introduced gallery view (2-column image grid) for high photo-coverage sections\n• Kept text-based list view for low-coverage or context-heavy sections (e.g., search results, offers)\n• Added guardrails (coverage thresholds, item count rules) to protect SMB stores and avoid poor layouts\n• Iterated through multiple experiment variants, balancing density, whitespace, and performance",
-          "Final direction:",
-          "• Apply gallery view only when coverage ≥80% and section has enough items\n• Optimize layout consistency (e.g., filling rows, reducing empty space)",
-        ].join("\n\n"),
-        [
-          "Launched T3 globally, improving efficiency without hurting core business metrics:",
-          "• ↑ Visit-level conversion rate and add-to-cart rate\n• ↑ Store view sessions (+0.06%) with neutral session CVR\n• ↑ Order value mix (VC w/o ads) (+0.43%) by surfacing higher-value items\n• ↑ Upsell attach rate and new item discovery",
-          "Behavioral shifts:",
-          "• Users scroll less, decide faster, and visit fewer stores—but convert more effectively",
-        ].join("\n\n"),
-      ).slice(1),
+      { type: "text", title: "Problem", body: [
+        "Users spend <1 minute deciding what to order, but menus are large (~44 items) and text-heavy. Most users only see a handful of items before choosing, leading to:",
+        "• Low scan efficiency and excessive scrolling\n• Underutilized menu photos\n• One-size-fits-all layouts that hurt low-photo (often SMB) stores\n• Missed opportunities to surface high-value or relevant items",
+      ].join("\n\n") },
+      {
+        type: "images",
+        items: [
+          {
+            src: "/work/gallery-view/gallery-current-coverage.png",
+            alt: "Device mockup — restaurant menu in list view with uneven item photo coverage; several dishes show placeholders instead of photography",
+            device: true,
+            showDeviceFrame: false,
+            bare: true,
+          },
+        ],
+      },
+      { type: "text", title: "Approach", body: [
+        "Designed a dynamic, subsection-level layout system that adapts based on photo coverage and menu size:",
+        "• Introduced gallery view (2-column image grid) for high photo-coverage sections\n• Kept text-based list view for low-coverage or context-heavy sections (e.g., search results, offers)\n• Added guardrails (coverage thresholds, item count rules) to protect SMB stores and avoid poor layouts\n• Iterated through multiple experiment variants, balancing density, whitespace, and performance",
+        "Final direction:",
+        "• Apply gallery view only when coverage ≥80% and section has enough items\n• Optimize layout consistency (e.g., filling rows, reducing empty space)",
+      ].join("\n\n") },
+      {
+        type: "images",
+        items: [
+          {
+            src: "/work/gallery-view/gallery-results-v1-vision.png",
+            alt: "Menu design exploration — earlier layout with image placeholders versus vision direction with full photography, ratings, and richer item cards",
+            objectFit: "contain",
+          },
+        ],
+      },
+      { type: "text", title: "Impact", body: [
+        "Launched T3 globally, improving efficiency without hurting core business metrics:",
+        "• ↑ Visit-level conversion rate and add-to-cart rate\n• ↑ Store view sessions (+0.06%) with neutral session CVR\n• ↑ Order value mix (VC w/o ads) (+0.43%) by surfacing higher-value items\n• ↑ Upsell attach rate and new item discovery",
+        "Behavioral shifts:",
+        "• Users scroll less, decide faster, and visit fewer stores—but convert more effectively",
+      ].join("\n\n") },
     ],
   },
 
@@ -98,30 +123,72 @@ export const PROJECT_PAGE_BY_SLUG: Partial<Record<string, ProjectPageData>> = {
     slug: "multi-sku-offers",
     name: "Multi SKU Offers",
     mediaTone: "peach",
-    date: "2024 — 2025",
+    date: "2025",
     role: "Product Designer",
     intro:
       "Designed and launched Multi-SKU Offers, a new promotions system that enables “mix & match” deals (e.g., Spend $X, Save $Y) across multiple products. The solution brings in-store–style promotions to Uber Eats, helping CPGs and merchants run more effective campaigns while improving affordability and basket building for users.",
-    blocks: problemApproachImpactLayout(
-      [
-        "Uber Eats lacked support for common in-store promotions like “buy multiple items and save,” leading to:",
-        "• Limited ability for CPGs and merchants to drive category-level sales\n• Missed promo budget opportunities (e.g., $16M+ blocked demand)\n• Fewer compelling grocery deals compared to competitors and in-store\n• User confusion or friction when trying to understand eligibility and savings",
-        "Existing offers were mostly single-SKU or simple discounts, making it hard to encourage larger, multi-item baskets.",
-      ].join("\n\n"),
-      [
-        "Designed a collection-based, multi-SKU offer system that enables flexible promotion structures and clear user understanding:",
-        "• Introduced core constructs like Spend X Save Y (SxSy) and later Buy X for Y (BxFy)\n• Built a collection-driven model, allowing merch teams to group eligible items and manage offers at scale",
-        "Designed end-to-end UX across surfaces:",
-        "• Storefront & Deals Hub: discovery via carousels and tags\n• PDP & modal: clear eligibility and progress tracking\n• Cart & checkout: grouped items with “threshold met / not met” states",
-        "Added guardrails (e.g., single redemption, stacking logic, profitability constraints) to balance flexibility with clarity and business health.",
-      ].join("\n\n"),
-      [
-        "Launched globally with strong early adoption and clear product–market fit:",
-        "• ~16.9K offers created across 21 merchants\n• $1.84M in offer spend across CPG, merchant, and Uber funding\n• Unlocked new CPG and merchant promo budgets and campaign types\n• Enabled larger, more intentional baskets and improved category penetration",
-        "Strategic impact:",
-        "• Established Multi-SKU as a core offers capability\n• Closed a major gap with in-store and competitor promotions\n• Created a scalable foundation for future constructs and funding models",
-      ].join("\n\n"),
-    ),
+    blocks: [
+      {
+        type: "images",
+        items: [
+          {
+            src: "/work/multi-sku-offers/multi-sku-competitors.png",
+            alt: "Competitor and in-store promotion patterns — category context and gap on Uber Eats",
+            objectFit: "contain",
+          },
+        ],
+      },
+      {
+        type: "text",
+        title: "Problem",
+        body: [
+          "Uber Eats lacked support for common in-store promotions like “buy multiple items and save,” leading to:",
+          "• Limited ability for CPGs and merchants to drive category-level sales\n• Missed promo budget opportunities (e.g., $16M+ blocked demand)\n• Fewer compelling grocery deals compared to competitors and in-store\n• User confusion or friction when trying to understand eligibility and savings",
+          "Existing offers were mostly single-SKU or simple discounts, making it hard to encourage larger, multi-item baskets.",
+        ].join("\n\n"),
+      },
+      {
+        type: "images",
+        items: [
+          {
+            src: "/work/multi-sku-offers/multi-sku-final.png",
+            alt: "Multi-SKU offers — final storefront, collections, and deal presentation",
+            objectFit: "contain",
+          },
+        ],
+      },
+      {
+        type: "text",
+        title: "Approach",
+        body: [
+          "Designed a collection-based, multi-SKU offer system that enables flexible promotion structures and clear user understanding:",
+          "• Introduced core constructs like Spend X Save Y (SxSy) and later Buy X for Y (BxFy)\n• Built a collection-driven model, allowing merch teams to group eligible items and manage offers at scale",
+          "Designed end-to-end UX across surfaces:",
+          "• Storefront & Deals Hub: discovery via carousels and tags\n• PDP & modal: clear eligibility and progress tracking\n• Cart & checkout: grouped items with “threshold met / not met” states",
+          "Added guardrails (e.g., single redemption, stacking logic, profitability constraints) to balance flexibility with clarity and business health.",
+        ].join("\n\n"),
+      },
+      {
+        type: "images",
+        items: [
+          {
+            src: "/work/multi-sku-offers/multi-sku-pdp.png",
+            alt: "Product detail and progress — eligibility, savings, and grouped line items in the offer flow",
+            objectFit: "contain",
+          },
+        ],
+      },
+      {
+        type: "text",
+        title: "Impact",
+        body: [
+          "Launched globally with strong early adoption and clear product–market fit:",
+          "• ~16.9K offers created across 21 merchants\n• $1.84M in offer spend across CPG, merchant, and Uber funding\n• Unlocked new CPG and merchant promo budgets and campaign types\n• Enabled larger, more intentional baskets and improved category penetration",
+          "Strategic impact:",
+          "• Established Multi-SKU as a core offers capability\n• Closed a major gap with in-store and competitor promotions\n• Created a scalable foundation for future constructs and funding models",
+        ].join("\n\n"),
+      },
+    ],
   },
 
   promotions: {
@@ -168,15 +235,60 @@ export const PROJECT_PAGE_BY_SLUG: Partial<Record<string, ProjectPageData>> = {
     slug: "thumbnails",
     name: "Improving Item Thumbnail",
     mediaTone: "grey",
-    date: "2019 — 2026",
+    date: "2023",
     role: "Product Designer",
     intro:
       "Redesigned item thumbnails for clarity and consistency across catalog views so users can decide faster—with clearer hierarchy and stronger promotion visibility.",
-    blocks: problemApproachImpactLayout(
-      "Thumbnails varied wildly across surfaces—sometimes hiding key facts, sometimes crowding the tile—so people hesitated or tapped in just to understand what they were seeing.\n\nDeals and attributes competed visually, slowing comparison in dense menus.",
-      "We established a thumbnail system: fixed information architecture for title, price, promos, and dietary or portion cues, with rules for imagery and fallbacks. Prototypes in Figma covered grid, list, and search contexts.\n\nWe validated with research sessions and engineering for image pipelines, caching, and accessibility.",
-      "Catalog views became easier to parse at a glance, with promotions and metadata visible in a predictable hierarchy.\n\nExpected signals include higher engagement on tiles, faster add-to-cart, and improved recognition of offers without sacrificing clarity.",
-    ),
+    blocks: [
+      {
+        type: "images",
+        items: [
+          {
+            src: "/work/item-thumbnail/comparison.png",
+            alt: "Item thumbnails — before and after comparison across catalog layouts",
+            objectFit: "contain",
+          },
+        ],
+      },
+      {
+        type: "text",
+        title: "Problem",
+        body:
+          "Thumbnails varied wildly across surfaces—sometimes hiding key facts, sometimes crowding the tile—so people hesitated or tapped in just to understand what they were seeing.\n\nDeals and attributes competed visually, slowing comparison in dense menus.",
+      },
+      {
+        type: "images",
+        items: [
+          {
+            src: "/work/item-thumbnail/Item-thumbnail.png",
+            alt: "Improved item thumbnail system — hierarchy for title, price, promos, and product image",
+            objectFit: "contain",
+          },
+        ],
+      },
+      {
+        type: "text",
+        title: "Approach",
+        body:
+          "We established a thumbnail system: fixed information architecture for title, price, promos, and dietary or portion cues, with rules for imagery and fallbacks. Prototypes in Figma covered grid, list, and search contexts.\n\nWe validated with research sessions and engineering for image pipelines, caching, and accessibility.",
+      },
+      {
+        type: "images",
+        items: [
+          {
+            src: "/work/item-thumbnail/resultsl.png",
+            alt: "Thumbnail results — clearer tiles in grid and list with consistent metadata and offer visibility",
+            objectFit: "contain",
+          },
+        ],
+      },
+      {
+        type: "text",
+        title: "Impact",
+        body:
+          "Catalog views became easier to parse at a glance, with promotions and metadata visible in a predictable hierarchy.\n\nExpected signals include higher engagement on tiles, faster add-to-cart, and improved recognition of offers without sacrificing clarity.",
+      },
+    ],
   },
 
   "home-banners": {
@@ -225,28 +337,73 @@ export const PROJECT_PAGE_BY_SLUG: Partial<Record<string, ProjectPageData>> = {
     slug: "quantity-selector",
     name: "Quantity Selector",
     mediaTone: "grey",
-    date: "2019 — 2026",
+    date: "2024",
     role: "Product Designer",
     intro:
       "Redesigned the Quantity Selector experience across product detail pages (PDP) to improve usability, reduce confusion, and enable faster item selection.\n\nThe solution introduced a persistent, state-driven quantity selector that keeps pricing, actions, and feedback visible throughout the interaction.",
-    blocks: problemApproachImpactLayout(
-      [
-        "The existing quantity selector created friction and confusion, especially in grocery and restaurant contexts:",
-        "• Adding multiple items felt disconnected from the add-to-cart action\n• Quantity selection was often hidden behind product details or customizations",
-        "Users lacked clear feedback for:",
-        "• Required selections\n• Current quantity\n• Cart state",
-        "This resulted in a less efficient experience and potential drop-offs during item selection.",
-      ].join("\n\n"),
-      [
-        "Designed a unified, state-based quantity selector system optimized for clarity and flexibility:",
-        "Persistent (sticky) selector\n• Kept quantity controls and price always visible, even while scrolling\n• Provided constant context for decision-making",
-        "State-driven interaction model\nDefined clear component states:\n• Default (Add to cart)\n• Multiple items\n• Required selections (e.g., customization needed)\n• In-cart / update / remove",
-        "Improved feedback & clarity\n• Surface real-time price updates based on quantity\n• Clear transitions between adding, updating, and removing items",
-        "Adapted to different verticals\nDesigned for both:\n• Grocery (simple quantity, weight-based items)\n• Restaurants (customizations, required options)",
-        "Exploration & iteration\n• Evaluated multiple interaction patterns and layouts\n• Refined component behavior to balance flexibility and simplicity",
-      ].join("\n\n"),
-      "• Improved clarity and usability of quantity selection\n• Reduced friction when adding multiple or customized items\n• Created a consistent interaction model across grocery and restaurant experiences\n• Established a scalable component for future add-to-cart and PDP interactions",
-    ),
+    blocks: [
+      {
+        type: "images",
+        items: [
+          {
+            src: "/work/quantity-selector/before-after-comparison.gif",
+            alt: "Product detail page — quantity selector before and after comparison",
+            objectFit: "contain",
+            loading: "eager",
+          },
+        ],
+      },
+      {
+        type: "text",
+        title: "Problem",
+        body: [
+          "The existing quantity selector created friction and confusion, especially in grocery and restaurant contexts:",
+          "• Adding multiple items felt disconnected from the add-to-cart action\n• Quantity selection was often hidden behind product details or customizations",
+          "Users lacked clear feedback for:",
+          "• Required selections\n• Current quantity\n• Cart state",
+          "This resulted in a less efficient experience and potential drop-offs during item selection.",
+        ].join("\n\n"),
+      },
+      {
+        type: "images",
+        items: [
+          {
+            src: "/work/quantity-selector/before-state.gif",
+            alt: "Quantity selector — earlier PDP state and interaction context",
+            objectFit: "contain",
+            loading: "eager",
+          },
+        ],
+      },
+      {
+        type: "text",
+        title: "Approach",
+        body: [
+          "Designed a unified, state-based quantity selector system optimized for clarity and flexibility:",
+          "Persistent (sticky) selector\n• Kept quantity controls and price always visible, even while scrolling\n• Provided constant context for decision-making",
+          "State-driven interaction model\nDefined clear component states:\n• Default (Add to cart)\n• Multiple items\n• Required selections (e.g., customization needed)\n• In-cart / update / remove",
+          "Improved feedback & clarity\n• Surface real-time price updates based on quantity\n• Clear transitions between adding, updating, and removing items",
+          "Adapted to different verticals\nDesigned for both:\n• Grocery (simple quantity, weight-based items)\n• Restaurants (customizations, required options)",
+          "Exploration & iteration\n• Evaluated multiple interaction patterns and layouts\n• Refined component behavior to balance flexibility and simplicity",
+        ].join("\n\n"),
+      },
+      {
+        type: "images",
+        items: [
+          {
+            src: "/work/quantity-selector/component-status.png",
+            alt: "Quantity selector component — states and feedback across default, multi-item, and in-cart",
+            objectFit: "contain",
+          },
+        ],
+      },
+      {
+        type: "text",
+        title: "Impact",
+        body:
+          "• Improved clarity and usability of quantity selection\n• Reduced friction when adding multiple or customized items\n• Created a consistent interaction model across grocery and restaurant experiences\n• Established a scalable component for future add-to-cart and PDP interactions",
+      },
+    ],
   },
 
   "fun-concepts": {

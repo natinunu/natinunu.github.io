@@ -14,6 +14,8 @@
   --shadow-lang: 0 1px 3px rgba(0, 0, 0, 0.06);
   --header-pad: clamp(1.25rem, 4vw, 2.5rem);
   --content-max: 1120px;
+  /** Max width for case-study body copy only; media uses full case container width. */
+  --project-body-max: min(60rem, 100%);
   --site-header-stack: calc(var(--header-pad) + 40px + 0.75rem);
 }
 
@@ -136,9 +138,16 @@ a:hover {
   gap: clamp(1.75rem, 4vw, 2.75rem);
 }
 
+.site-header-right {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .nav--header {
   flex-shrink: 0;
-  margin-left: auto;
 }
 
 .nav-link {
@@ -155,8 +164,17 @@ a:hover {
   color: var(--color-accent);
 }
 
-.hero-lang {
+.lang-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.lang-wrap--hero {
   margin-top: 1.125rem;
+}
+
+.lang-wrap--header {
+  flex-shrink: 0;
 }
 
 .lang-btn {
@@ -178,6 +196,52 @@ a:hover {
 .lang-chevron {
   flex-shrink: 0;
   opacity: 0.75;
+  transition: transform 0.15s ease;
+}
+
+.lang-btn[aria-expanded="true"] .lang-chevron {
+  transform: rotate(180deg);
+}
+
+.lang-menu {
+  list-style: none;
+  margin: 0.35rem 0 0;
+  padding: 0.25rem 0;
+  position: absolute;
+  left: 0;
+  min-width: 9rem;
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  z-index: 300;
+}
+
+.lang-wrap--header .lang-menu {
+  left: auto;
+  right: 0;
+}
+
+.lang-menu-item {
+  margin: 0;
+}
+
+.lang-menu-option {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.85rem;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: left;
+  color: var(--color-text-strong);
+  cursor: pointer;
+}
+
+.lang-menu-option:hover,
+.lang-menu-option[aria-selected="true"] {
+  background: rgba(255, 0, 45, 0.06);
+  color: var(--color-accent);
 }
 
 /* Hero — full-bleed grey band (aligned with navbar on home) */
@@ -257,16 +321,40 @@ a:hover {
 
 .project-card {
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .project-media {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
   min-height: clamp(280px, 55vw, 420px);
   border-radius: var(--radius-card);
   padding: clamp(1.5rem, 4vw, 2.5rem);
   text-decoration: none;
+}
+
+/* Full-bleed cover on work grid — same width as project-card, no phone frame */
+.project-media.project-media--cover-only {
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  min-height: 0;
+  line-height: 0;
+  aspect-ratio: 16 / 10;
+}
+
+.project-media.project-media--cover-only .project-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .project-media:hover {
@@ -536,7 +624,16 @@ a.project-name:hover {
 }
 
 .project-block--text {
-  max-width: 52rem;
+  max-width: var(--project-body-max);
+}
+
+.project-block--media {
+  width: 100%;
+  max-width: none;
+}
+
+.project-block--media .project-media-img.project-media-img--contain {
+  margin-inline: 0;
 }
 
 .project-block-title {
@@ -568,6 +665,14 @@ a.project-name:hover {
 
 .project-media-row--single {
   grid-template-columns: 1fr;
+  justify-items: stretch;
+}
+
+/* Single figures span the full width of the case-study media row. */
+.project-media-row--single > .project-media-slot {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 @media (max-width: 719px) {
@@ -580,6 +685,23 @@ a.project-name:hover {
   border-radius: var(--radius-card);
   overflow: hidden;
   background: #f2f2f2;
+}
+
+/* Full-bleed asset with its own background — no second grey card; radius on img only */
+.project-media-slot--bare {
+  background: transparent;
+  padding: 0;
+  overflow: visible;
+  border-radius: 0;
+}
+
+.project-media-img--bare {
+  border-radius: var(--radius-card);
+  display: block;
+}
+
+.project-media-slot--bare .project-media-img--embedded {
+  margin-inline: 0;
 }
 
 /* Phone mockup columns — grey card stacks device + caption vertically */
@@ -627,6 +749,15 @@ a.project-name:hover {
   object-fit: contain;
 }
 
+/* Single-slot embedded mockups (e.g. wide device PNG): fill row width; do not cap height at 640px
+   or wide comps shrink and no longer match full-width hero figures. */
+.project-media-row--single .project-media-img--embedded {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  max-height: none;
+}
+
 .project-media-caption {
   margin: 0;
   padding: 0 0.25rem;
@@ -667,13 +798,20 @@ a.project-name:hover {
   object-fit: cover;
 }
 
-/* Full-bleed case-study figures (e.g. before/after composite) — no crop, no upscale past bitmap size */
+/* Full-bleed case-study figures (e.g. before/after composite) — no crop; prefer sharp downscale from hi-res */
 .project-media-img.project-media-img--contain {
   width: auto;
   max-width: 100%;
   min-height: 0;
   height: auto;
   margin-inline: auto;
+  image-rendering: auto;
+}
+
+@supports (image-rendering: high-quality) {
+  .project-media-img.project-media-img--contain {
+    image-rendering: high-quality;
+  }
 }
 
 .device-frame--large {
